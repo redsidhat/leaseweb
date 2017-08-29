@@ -39,6 +39,10 @@ This provisioning tool uses the following technologies:
 * [terraform] - Terraform enables you to safely and predictably create, change, and improve production infrastructure
 * [Ansible] - Ansible is the simplest way to automate apps and IT infrastructure. Application Deployment + Configuration Management + Continuous Delivery.
 
+###### NOTE: mysql password is in database playbook. right now there is only root user. 
+ username: root
+ password: strongpassword
+  
    [ansible]: <https://www.ansible.com/>
    [terraform]: <https://www.terraform.io/>
  
