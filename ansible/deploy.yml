@@ -1,0 +1,7 @@
+- name: deploy only
+  hosts: leaseweb
+  become: yes
+
+  roles:
+    - deploy
+
