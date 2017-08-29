@@ -14,6 +14,43 @@ if [ $machine == 'UNKNOWN' ]; then
 	echo "Unknown machine type. Exiting"
 	exit 1
 fi
+
+function deployonly
+{
+    cd ansible
+    ansible leaseweb -i hosts -m ping
+    if [ $? -eq 0 ]; then
+        echo -e "\n\n\"ansible ping\" ran ${GRN}OK\n${NC}"
+    else
+        echo -e "\n\n\"ansible ping\" ${RED}Failed. \n${YLW}It could be becuase the aws ec2 instance is still initiating. Please retry.${NC}\nCheck above output for more details.\n"
+        exit
+    fi
+    echo -e "${YLW}Applying ansible play-book\n${NC}"
+    ansible-playbook -i hosts deploy.yml
+}
+
+function destroy
+{
+    cd terraform_code
+    ../terraform destroy
+}
+if [ $# -gt 1 ]; then
+    echo -e "${RED}This script accepts only one option\n${NC}"
+elif [ $# -eq 1 ]; then
+    if [[ $1 == '--deployonly' || $1 == '--destroy' ]]; then
+        continue
+    else
+        echo -e "${RED}Available options are \n${NC} --deployonly \n --destroy"
+        exit 1
+    fi
+fi
+
+if [[ -z $ && $1 == '--deployonly' ]]; then
+    deployonly
+    exit 0
+fi
+
+
 echo "Checking if terraform is present"
 if [ ! -f terraform ]; then
     echo "Terraform is not present downloading."
@@ -36,6 +73,12 @@ if [ ! -f terraform ]; then
 else
 	echo "Terraform is present; proceeding"
 fi
+
+if [[  -z $ && $1 == '--destroy' ]]; then
+    destroy
+    exit 0
+fi
+
 echo "Checking if the keypair exist in the directory"
 if [ ! -f keyfile ] || [ ! -f keyfile.pub ]; then
 	echo "Keypair not present. Generating new keypair"
