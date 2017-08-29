@@ -1,0 +1,19 @@
+---
+- name: Installing system components
+  apt:
+    name: "{{item}}"
+    update_cache: yes
+    cache_valid_time: 36000
+    state: installed
+  with_items:
+    - nginx
+    - php5
+    - php5-fpm 
+    - php5-common 
+    - php5-curl 
+    - php5-dev 
+    - php5-cli
+    - unzip
+    - mysql-server
+    - php5-mysql
+    - python-mysqldb

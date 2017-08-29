@@ -1,0 +1,11 @@
+- name: automated php code deploy
+  hosts: leaseweb
+  become: yes
+
+  roles:
+    - setup
+    - deploy
+    - database
+    - webserver-configuration
+    # 
+    # 

@@ -1,0 +1,22 @@
+- name: Copy nginx conf to server
+  copy:
+    src: "{{ role_path }}/files/nginx.conf"
+    dest: /etc/nginx/sites-available/tinytodo.conf
+    owner: root
+    group: root
+    mode: 0644
+- name: making sure nginx default site is removed
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: 
+    - restart nginx
+- name: Activating site
+  file:
+    src: /etc/nginx/sites-available/tinytodo.conf
+    dest: /etc/nginx/sites-enabled/tinytodo.conf
+    state: link    
+  notify: 
+    - restart nginx
+- name: Explicitly restarting nginx to be on the safe side
+  shell: /etc/init.d/nginx restart

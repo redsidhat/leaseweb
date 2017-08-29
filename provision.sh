@@ -49,19 +49,11 @@ else
 fi
 PUB_KEY=`cat keyfile.pub`
 
-if [ ! -z $1 ]; then
-	cd terraform_code
-	REPLACE="    instance_type = \\\"$1\\\""
-	#Did not use direct file replacement to ensure compatibility on linux and BSD based OSs
-	echo `cat origin.tf |sed -e "s|.*instance_type.*|$REPLACE|g" > origin.tf.bk && mv origin.tf.bk origin.tf`
-else
-	cd terraform_code
-fi
 
-
+cd terraform_code
 echo "Updating terraform keypair class with new public key"
 REPLACE="  public_key = \\\"$PUB_KEY\\\""
-#Following line does a simple sed replace in keypair.tf. 
+#Following line does a simple sed replace in keypair.tf. #Did not use direct file replacement to ensure compatibility on linux and BSD based OSs
 echo `cat keypair.tf |sed -e "s|.*public_key.*|$REPLACE|g" > keypair.tf.bk && mv keypair.tf.bk keypair.tf`
 echo "Running terraform plan"
 ../terraform plan
@@ -98,7 +90,6 @@ sleep 10
 ansible leaseweb -i hosts -m ping
 if [ $? -eq 0 ]; then
     echo -e "\n\n\"ansible ping\" ran ${GRN}OK\n${NC}"
-    exit 0
 else
 	echo -e "\n\n\"ansible ping\" ${RED}Failed. \n${YLW}It could be becuase the aws ec2 instance is still initiating. Please retry.${NC}\nCheck above output for more details.\n"
 	exit

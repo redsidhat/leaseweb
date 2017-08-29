@@ -1,0 +1,34 @@
+---
+- name: Copying .my.cnf
+  copy:
+    src: "{{ role_path }}/files/dotmy.cnf"
+    dest: /root/.my.cnf
+    mode: 400
+    force: no
+- name: Start the MySQL service
+  service: 
+    name: mysql 
+    state: started
+    enabled: true
+- name: Update mysql root password for all root accounts
+  mysql_user: 
+    name: root 
+    host: "{{ item }}" 
+    password: "strongpassword"
+    check_implicit_admin: yes
+    priv: "*.*:ALL,GRANT"
+  with_items:
+      - 127.0.0.1
+      - ::1
+      - localhost 
+- name: Updating .my.cnf
+  replace:
+    path: /root/.my.cnf
+    regexp: 'password.*'
+    replace: 'password=strongpassword'
+    backup: yes
+
+- name: Creating databse
+  mysql_db:
+    name: mytinytodo
+    state: present

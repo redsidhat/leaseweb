@@ -1,0 +1,29 @@
+---
+  - name: Create deploy dirs
+    file:
+      path: /var/www/leaseweb/
+      state: directory
+      mode: 0755
+  - name: removing any existing files
+    file:
+      path: /tmp/file.zip
+      state: absent
+  - name: Pulling the code
+    uri:
+      url: http://www.mytinytodo.net/latest.php
+      dest: /tmp/file.zip
+  - name: Extracting files
+    unarchive:
+      src: /tmp/file.zip
+      dest: /var/www/leaseweb/
+      remote_src: yes
+  - name: Ensure directories are 0755
+    command: find /var/www/leaseweb/ -type d -exec chmod 0755 {} \;
+  - name: Ensure files are 0644
+    command: find /var/www/leaseweb/ -type f -exec chmod 0644 {} \;
+  - name: Changing ownership
+    file:
+      path: /var/www/leaseweb/
+      owner: www-data
+      group: www-data
+      recurse: yes
