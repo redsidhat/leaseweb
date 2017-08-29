@@ -95,4 +95,4 @@ else
 	exit
 fi
 echo -e "${YLW}Applying ansible play-book\n${NC}"
-ansible-playbook -i hosts --extra-vars "dsn=\"https://27a38021772c4bde8a0ce068486232ab:95128db1a4df49ec8ba178eef3771f15@sentry.io/196145\"" site.yml
+ansible-playbook -i hosts site.yml
